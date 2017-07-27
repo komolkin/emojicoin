@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+    <!-- <script type="text/javascript">
+      function myFunction() {
+        document.getElementById('the-price').setAttribute("class", "the-price-light");
+      }
+    </script> -->
+  </head>
+  <style>
+    body {
+      /*font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;*/
+      font-family: 'Roboto Mono', monospace;
+      -webkit-font-smoothing: antialiased;
+      cursor: default;
+      color: #999;
+      background: black;
+      margin: 0;
+      -webkit-app-region: drag;
+      -ms-overflow-style: scrollbar;
+    }
+    ::selection {
+      background: transparent;
+    }
+    input[type="submit"],
+    input[type="reset"],
+    input[type="button"],
+    input[type="text"],
+    button,
+    textarea {
+    	-webkit-app-region: no-drag;
+    }
+    p, h1, h2, h3, h4, h5, h6 {
+      -webkit-user-select: none;
+      margin: 3px 0;
+    }
+    header {
+      background-image: url('');
+      background-size: cover;
+
+      text-align: center;
+
+      height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #mode {
+      position: fixed;
+      top: 7px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background-color: transparent;
+      background-repeat: no-repeat;
+      border: none;
+      overflow: hidden;
+      outline: none;
+    }
+    .mode-on {
+      background-image: url('assets/dark-mode-on.svg');
+    }
+    .mode-off {
+      background-image: url('assets/dark-mode-off.svg');
+    }
+    #price {
+      color: white;
+    }
+    .the-price:before {
+      content: "$";
+    }
+    .up {
+      color: #28ca42;
+    }
+    .up:before {
+      content: "+";
+    }
+    .down {
+      color: #ff6059;
+    }
+    .up:after, .down:after {
+      content: "%";
+    }
+  </style>
+  <!-- 🌙🌛🌤😴 -->
+  <body>
+    <header>
+      <button id="mode" class="mode-on" onclick="myFunction();"></button>
+      <h1><div id="priceHistory"></div></h1>
+      <h2><div class="the-price" id="price">0000.00</div></h2>
+      <h6 style="color: #555;">24h: <span class="up-down" id="priceChange">+00.00%</span></h6>
+      <!-- <h5 style="line-height: 19px;">One BTC now worth<br><span class="the-price" id="price">0000.00</span> and <span class="up-down" id="priceChange">00.00%</span><br>from yesterday</h5> -->
+    </header>
+    <script>
+      function myFunction() {
+        var appMode = document.getElementById('mode');
+        appMode.classList.toggle('mode-off');
+
+        var priceColor = document.getElementById('price');
+        if (priceColor.style.color === 'black') {
+            priceColor.style.color = 'white';
+        }
+        else {
+            priceColor.style.color = 'black';
+        }
+
+        var bgColor = document.body;
+        if (bgColor.style.backgroundColor === 'white') {
+            bgColor.style.backgroundColor = 'black';
+        }
+        else {
+            bgColor.style.backgroundColor = 'white';
+        }
+      }
+      var request = require('request');
+      setInterval (function(){
+        request("https://api.coinmarketcap.com/v1/ticker/bitcoin/", function(error, response, body) {
+          body = JSON.parse(body);
+          console.log(body);
+          newPrice(body);
+        });
+      }, 1000);
+      var lastPrice;
+      function newPrice(arr) {
+        currentPrice = arr[0]["price_usd"].substring(0,8);
+        priceChange = arr[0]["percent_change_24h"];
+        var history = document.getElementById("priceHistory");
+        var change = document.getElementById("priceChange");
+        if (priceChange>0) {
+          var newElText = "💸";
+          var wrap = document.createElement("span");
+          change.className = "up";
+        }
+        else {
+          var newElText = "😡";
+          var wrap = document.createElement("span");
+          change.className = "down";
+        }
+        history.appendChild(wrap);
+        var textNode = document.createTextNode(newElText);
+        wrap.appendChild(textNode);
+        var nodeList = history.getElementsByTagName("SPAN").length;
+        if (nodeList==2) {
+          history.children[0].remove();
+        }
+        document.getElementById("price").innerHTML = currentPrice;
+        lastPrice = currentPrice;
+        document.getElementById("priceChange").innerHTML = priceChange;
+      }
+    </script>
+  </body>
+</html>

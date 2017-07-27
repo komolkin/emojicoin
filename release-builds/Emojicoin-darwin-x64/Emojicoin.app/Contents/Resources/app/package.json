@@ -1,0 +1,23 @@
+{
+  "name": "emojicoin-app",
+  "productName": "Emojicoin",
+  "version": "0.1.0",
+  "description": "Simple bitcoin ticker with emotions",
+  "main": "main.js",
+  "electron": "^1.4.3",
+  "electron-packager": "^8.1.0",
+  "author": "Ilya Komolkin <komolkin@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "electron-prebuilt": "^1.4.13",
+    "request": "^2.81.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds"
+  },
+  "devDependencies": {
+    "electron": "^1.6.11",
+    "electron-packager": "^8.7.2"
+  }
+}
